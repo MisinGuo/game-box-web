@@ -10,9 +10,10 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const navItems = [
   { id: '/', label: '首页' },
+  { id: '/pojie', label: '破解版' },
   { id: '/boxes', label: '盒子大全' },
   { id: '/games', label: '游戏库' },
-  { id: '/articles', label: '攻略资讯' },
+  { id: '/strategy', label: '游戏攻略' },
   { id: '/discounts', label: '福利中心' },
 ]
 
