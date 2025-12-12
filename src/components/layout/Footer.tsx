@@ -1,16 +1,16 @@
-import React from 'react';
+import Link from 'next/link'
 
 export function Footer() {
   return (
     <footer className="border-t border-slate-800 bg-slate-950 py-12 text-slate-400">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
-          <div className="flex items-center gap-2 font-bold text-xl text-white mb-4">
+          <Link href="/" className="flex items-center gap-2 font-bold text-xl text-white mb-4">
             <div className="h-8 w-8 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               G
             </div>
             <span>GameBox</span>
-          </div>
+          </Link>
           <p className="text-sm leading-relaxed">
             最专业的中立游戏盒子聚合平台。
             <br />
@@ -21,20 +21,20 @@ export function Footer() {
         <div>
           <h3 className="font-semibold text-white mb-4">平台导航</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-blue-400">盒子大全</a></li>
-            <li><a href="#" className="hover:text-blue-400">游戏库</a></li>
-            <li><a href="#" className="hover:text-blue-400">福利中心</a></li>
-            <li><a href="#" className="hover:text-blue-400">攻略资讯</a></li>
+            <li><Link href="/boxes" className="hover:text-blue-400">盒子大全</Link></li>
+            <li><Link href="/games" className="hover:text-blue-400">游戏库</Link></li>
+            <li><Link href="/discounts" className="hover:text-blue-400">福利中心</Link></li>
+            <li><Link href="/articles" className="hover:text-blue-400">攻略资讯</Link></li>
           </ul>
         </div>
 
         <div>
           <h3 className="font-semibold text-white mb-4">关于我们</h3>
           <ul className="space-y-2 text-sm">
-            <li><a href="#" className="hover:text-blue-400">联系合作</a></li>
-            <li><a href="#" className="hover:text-blue-400">免责声明</a></li>
-            <li><a href="#" className="hover:text-blue-400">隐私政策</a></li>
-            <li><a href="#" className="hover:text-blue-400">加入我们</a></li>
+            <li><Link href="/contact" className="hover:text-blue-400">联系合作</Link></li>
+            <li><Link href="/disclaimer" className="hover:text-blue-400">免责声明</Link></li>
+            <li><Link href="/privacy" className="hover:text-blue-400">隐私政策</Link></li>
+            <li><Link href="/join" className="hover:text-blue-400">加入我们</Link></li>
           </ul>
         </div>
 
@@ -54,8 +54,8 @@ export function Footer() {
         </div>
       </div>
       <div className="container mx-auto px-4 mt-12 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-        © 2025 GameBox Platform. All rights reserved. 仅为示例演示。
+        © 2025 GameBox Platform. All rights reserved.
       </div>
     </footer>
-  );
+  )
 }

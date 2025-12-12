@@ -1,51 +1,56 @@
-import React, { useState } from 'react';
-import { Menu, Search, User, X } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
+'use client'
 
-interface HeaderProps {
-  onNavigate: (page: string) => void;
-  currentPage: string;
-}
+import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Menu, Search, User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
-export function Header({ onNavigate, currentPage }: HeaderProps) {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+const navItems = [
+  { id: '/', label: '首页' },
+  { id: '/boxes', label: '盒子大全' },
+  { id: '/games', label: '游戏库' },
+  { id: '/articles', label: '攻略资讯' },
+  { id: '/discounts', label: '福利中心' },
+]
 
-  const navItems = [
-    { id: 'home', label: '首页' },
-    { id: 'box-list', label: '盒子大全' },
-    { id: 'game-library', label: '游戏库' },
-    { id: 'guides', label: '攻略资讯' },
-    { id: 'discounts', label: '福利中心' },
-  ];
+export function Header() {
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isActive = (path: string) => {
+    if (path === '/') return pathname === '/'
+    return pathname.startsWith(path)
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur supports-[backdrop-filter]:bg-slate-950/60">
       <div className="container mx-auto flex h-16 items-center px-4">
         {/* Logo */}
-        <div 
-          className="mr-8 flex items-center gap-2 font-bold text-xl text-white cursor-pointer"
-          onClick={() => onNavigate('home')}
+        <Link 
+          href="/"
+          className="mr-8 flex items-center gap-2 font-bold text-xl text-white"
         >
           <div className="h-8 w-8 rounded bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
             G
           </div>
           <span>GameBox</span>
-        </div>
+        </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
           {navItems.map((item) => (
-            <button
+            <Link
               key={item.id}
-              onClick={() => onNavigate(item.id)}
+              href={item.id}
               className={`transition-colors hover:text-white ${
-                currentPage === item.id ? 'text-white' : 'text-slate-400'
+                isActive(item.id) ? 'text-white' : 'text-slate-400'
               }`}
             >
               {item.label}
-            </button>
+            </Link>
           ))}
         </nav>
 
@@ -94,15 +99,15 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
             <SheetContent side="right" className="bg-slate-950 border-slate-800 text-slate-100">
               <div className="flex flex-col gap-4 mt-8">
                 {navItems.map((item) => (
-                  <button
+                  <Link
                     key={item.id}
-                    onClick={() => onNavigate(item.id)}
+                    href={item.id}
                     className={`text-lg font-medium text-left px-4 py-2 rounded-md hover:bg-slate-900 ${
-                      currentPage === item.id ? 'text-white bg-slate-900' : 'text-slate-400'
+                      isActive(item.id) ? 'text-white bg-slate-900' : 'text-slate-400'
                     }`}
                   >
                     {item.label}
-                  </button>
+                  </Link>
                 ))}
               </div>
             </SheetContent>
@@ -125,5 +130,5 @@ export function Header({ onNavigate, currentPage }: HeaderProps) {
         </div>
       )}
     </header>
-  );
+  )
 }
