@@ -2,3 +2,7 @@ node_modules/
 .next
 .vite
 dist/
+out/
+build/
+.cache/
+coverage/

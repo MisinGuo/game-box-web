@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label'
 import { BoxCard } from '@/components/common/BoxCard'
 import { BoxesFilterSheet } from './BoxesFilterSheet'
 
-// CSR/SSR 混合：盒子列表页
-export const dynamic = 'force-dynamic'
+// SSG: 静态生成
+export const dynamic = 'force-static'
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: '游戏盒子大全 - 全网 50+ 优质游戏盒子对比',

@@ -1,16 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 开启静态导出支持（可选，用于全静态部署）
-  // output: 'export',
+  // 开启静态导出支持（用于 Cloudflare Pages 等静态托管）
+  output: 'export',
   
-  // 图片优化配置
+  // 静态导出时禁用图片优化（Cloudflare 不支持 Next.js 图片优化）
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    unoptimized: true,
   },
   
   // 实验性功能
