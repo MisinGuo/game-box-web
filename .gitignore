@@ -6,3 +6,4 @@ out/
 build/
 .cache/
 coverage/
+.open-next/

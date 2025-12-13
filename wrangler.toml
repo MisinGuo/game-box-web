@@ -1,20 +1,19 @@
 #:schema node_modules/wrangler/config-schema.json
 
-# Cloudflare Pages Workers 配置
-# 支持 Next.js ISR 按需生成
-
+# Cloudflare Workers 配置
 name = "game-box"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Pages 构建输出目录（必需）
-pages_build_output_dir = ".open-next"
+# Worker 入口文件
+main = ".open-next/worker.js"
 
-# KV 存储（用于 ISR 缓存，可选）
-# [[kv_namespaces]]
-# binding = "CACHE"
-# id = "your-kv-namespace-id"
+# 静态资源配置
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
 
-# 环境变量
-# [vars]
-# SITE_URL = "https://your-domain.com"
+# 自引用服务（用于 ISR）
+[[services]]
+binding = "WORKER_SELF_REFERENCE"
+service = "game-box"

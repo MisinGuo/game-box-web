@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "cross-env CLOUDFLARE_WORKERS=true next build && opennextjs-cloudflare build --skipNextBuild --configPath open-next.config.ts",
+    "build": "opennextjs-cloudflare build",
     "build:local": "next build",
     "start": "next start",
     "lint": "next lint",
-    "preview": "pnpm build && wrangler dev",
-    "pages:deploy": "pnpm build && wrangler deploy"
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
