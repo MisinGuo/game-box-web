@@ -4,15 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "CLOUDFLARE_WORKERS=true next build && opennextjs-cloudflare build --skipNextBuild",
+    "build:local": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:static": "next build",
-    "build:workers": "cross-env CLOUDFLARE_WORKERS=true next build && opennextjs-cloudflare build --skipNextBuild",
-    "preview": "pnpm build:workers && wrangler dev",
-    "pages:build": "pnpm build:workers",
-    "pages:deploy": "pnpm pages:build && wrangler deploy",
-    "pages:deploy:static": "pnpm build:static && wrangler pages deploy out"
+    "preview": "pnpm build && wrangler dev",
+    "pages:deploy": "pnpm build && wrangler deploy"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
