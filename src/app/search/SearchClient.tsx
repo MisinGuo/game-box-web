@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Search, BookOpen, Gamepad2, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -23,8 +24,18 @@ export default function SearchPageClient({
 }: { 
   allResults: SearchResult[] 
 }) {
-  const [query, setQuery] = useState('')
+  const searchParams = useSearchParams()
+  const initialQuery = searchParams.get('q') || ''
+  const [query, setQuery] = useState(initialQuery)
   const [activeTab, setActiveTab] = useState('all')
+
+  // 当 URL 参数变化时更新搜索框
+  useEffect(() => {
+    const urlQuery = searchParams.get('q') || ''
+    if (urlQuery !== query) {
+      setQuery(urlQuery)
+    }
+  }, [searchParams])
 
   // 搜索过滤
   const filteredResults = useMemo(() => {

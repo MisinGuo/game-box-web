@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Menu, Search, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,7 +19,24 @@ const navItems = [
 
 export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery('')
+      setIsSearchOpen(false)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch(e)
+    }
+  }
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/'
@@ -58,14 +75,17 @@ export function Header() {
         {/* Right Actions */}
         <div className="ml-auto flex items-center gap-2">
           {/* Search - Desktop */}
-          <div className="hidden md:flex relative w-64">
+          <form onSubmit={handleSearch} className="hidden md:flex relative w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
             <Input
               type="search"
               placeholder="搜索游戏、盒子、攻略..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="pl-9 bg-slate-900 border-slate-800 text-slate-100 focus-visible:ring-blue-500"
             />
-          </div>
+          </form>
 
           {/* Search - Mobile Toggle */}
           <Button
@@ -119,15 +139,18 @@ export function Header() {
       {/* Mobile Search Bar */}
       {isSearchOpen && (
         <div className="md:hidden border-t border-slate-800 p-4 bg-slate-950">
-          <div className="relative">
+          <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-slate-400" />
             <Input
               type="search"
               placeholder="搜索..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="pl-9 bg-slate-900 border-slate-800 text-slate-100"
               autoFocus
             />
-          </div>
+          </form>
         </div>
       )}
     </header>
