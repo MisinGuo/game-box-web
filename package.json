@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "CLOUDFLARE_WORKERS=true next build && opennextjs-cloudflare build --skipNextBuild",
+    "build": "cross-env CLOUDFLARE_WORKERS=true next build && opennextjs-cloudflare build --skipNextBuild --configPath open-next.config.ts",
     "build:local": "next build",
     "start": "next start",
     "lint": "next lint",
