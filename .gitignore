@@ -7,3 +7,8 @@ build/
 .cache/
 coverage/
 .open-next/
+
+# vitepress
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+

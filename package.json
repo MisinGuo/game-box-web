@@ -9,7 +9,11 @@
     "start": "next start",
     "lint": "next lint",
     "preview": "cross-env CLOUDFLARE_WORKERS=true opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "cross-env CLOUDFLARE_WORKERS=true opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "deploy": "cross-env CLOUDFLARE_WORKERS=true opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "docs:dev": "node scripts/deploy-docs.js dev",
+    "docs:build": "node scripts/deploy-docs.js build",
+    "docs:preview": "node scripts/deploy-docs.js preview",
+    "docs:deploy": "node scripts/deploy-docs.js deploy"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.1",
@@ -72,10 +76,13 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "cross-env": "^10.1.0",
+    "mermaid": "^11.12.2",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.6.0",
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17",
     "wrangler": "^4.54.0"
   }
 }
