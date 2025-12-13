@@ -5,7 +5,10 @@ import { getModuleConfig } from '@/config/modules'
 import { ArticleLayout } from '@/components/content/ArticleLayout'
 
 // 构建模式检测
-const isWorkersMode = process.env.CLOUDFLARE_WORKERS === 'true'
+// Cloudflare 构建环境会设置 CF_PAGES 或通过 opennextjs-cloudflare 构建
+const isWorkersMode = process.env.CLOUDFLARE_WORKERS === 'true' || 
+                       process.env.CF_PAGES === '1' ||
+                       process.env.npm_lifecycle_script?.includes('opennextjs-cloudflare')
 
 // SSG + ISR: 按需生成，24小时重新验证
 // Cloudflare Pages Workers 模式支持真正的 ISR
