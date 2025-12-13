@@ -7,9 +7,8 @@ name = "game-box"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# 生产环境设置
-# [env.production]
-# name = "game-box-prod"
+# Pages 构建输出目录（必需）
+pages_build_output_dir = ".open-next"
 
 # KV 存储（用于 ISR 缓存，可选）
 # [[kv_namespaces]]
