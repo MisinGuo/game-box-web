@@ -9,20 +9,38 @@ interface MarkdownRendererProps {
   content: string
 }
 
+// 从 children 中提取纯文本（用于生成 id）
+function extractText(children: React.ReactNode): string {
+  if (typeof children === 'string') return children
+  if (Array.isArray(children)) return children.map(extractText).join('')
+  if (children && typeof children === 'object' && 'props' in children) {
+    return extractText((children as any).props?.children)
+  }
+  return ''
+}
+
+// 生成标题 id（与 TOC 生成逻辑保持一致）
+function generateHeadingId(children: React.ReactNode): string {
+  const text = extractText(children)
+  // 移除 HTML 标签，只保留纯文本，然后生成 id
+  const cleanText = text.replace(/<[^>]*>/g, '').trim()
+  return cleanText.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-')
+}
+
 // 自定义组件样式
 const components: Components = {
-  // 标题
+  // 标题 - 添加 id 以支持锚点定位
   h1: ({ children }) => (
-    <h1 className="text-2xl font-bold text-white mt-8 mb-4">{children}</h1>
+    <h1 id={generateHeadingId(children)} className="text-2xl font-bold text-white mt-8 mb-4">{children}</h1>
   ),
   h2: ({ children }) => (
-    <h2 className="text-xl font-bold text-white mt-8 mb-4">{children}</h2>
+    <h2 id={generateHeadingId(children)} className="text-xl font-bold text-white mt-8 mb-4">{children}</h2>
   ),
   h3: ({ children }) => (
-    <h3 className="text-lg font-bold text-white mt-6 mb-3">{children}</h3>
+    <h3 id={generateHeadingId(children)} className="text-lg font-bold text-white mt-6 mb-3">{children}</h3>
   ),
   h4: ({ children }) => (
-    <h4 className="text-base font-bold text-white mt-4 mb-2">{children}</h4>
+    <h4 id={generateHeadingId(children)} className="text-base font-bold text-white mt-4 mb-2">{children}</h4>
   ),
   
   // 段落

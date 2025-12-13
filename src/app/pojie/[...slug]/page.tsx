@@ -70,13 +70,17 @@ export default async function PojiePage({
     .split(/[,，;；]/)[0]
     .trim()
 
-  // 构建 TOC
+  // 构建 TOC - 移除标题中的 HTML 标签（如 <a name="..."></a>）
   const headingMatches = article.content.matchAll(/^(#{2,3})\s+(.+)$/gm)
-  const toc = Array.from(headingMatches).map(match => ({
-    level: match[1].length,
-    text: match[2],
-    id: match[2].toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-'),
-  }))
+  const toc = Array.from(headingMatches).map(match => {
+    // 移除 HTML 标签，只保留纯文本
+    const cleanText = match[2].replace(/<[^>]*>/g, '').trim()
+    return {
+      level: match[1].length,
+      text: cleanText,
+      id: cleanText.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-'),
+    }
+  })
 
   return (
     <ArticleLayout
