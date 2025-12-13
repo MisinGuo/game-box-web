@@ -4,15 +4,30 @@ import { getStrategyArticle, getStrategyArticles } from '@/lib/content'
 import { getModuleConfig } from '@/config/modules'
 import { ArticleLayout } from '@/components/content/ArticleLayout'
 
-// SSG + ISR: 静态生成，24小时重新验证
+// 构建模式检测
+const isWorkersMode = process.env.CLOUDFLARE_WORKERS === 'true'
+
+// SSG + ISR: 按需生成，24小时重新验证
+// Cloudflare Pages Workers 模式支持真正的 ISR
 export const dynamic = 'force-static'
 export const revalidate = 86400
+// 允许生成未在 generateStaticParams 中定义的路径
+export const dynamicParams = true
 
 // 获取模块配置
 const moduleConfig = getModuleConfig('strategy')
 
 // 生成静态路径
+// - Workers 模式: 返回空数组，实现按需生成
+// - 静态导出模式: 返回所有文章，全量预构建
 export async function generateStaticParams() {
+  if (isWorkersMode) {
+    // 按需生成：不预构建任何页面，用户访问时实时生成并缓存
+    // 支持上亿篇文章
+    return []
+  }
+  
+  // 静态导出模式：预构建所有文章
   const articles = await getStrategyArticles()
   return articles.map((article) => ({
     slug: article.slug.split('/'),

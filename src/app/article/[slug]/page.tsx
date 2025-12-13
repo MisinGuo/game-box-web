@@ -8,7 +8,8 @@ import { Separator } from '@/components/ui/separator'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ArticleMobileBar } from './ArticleMobileBar'
 
-// SSG + ISR: 文章页面静态生成，24小时重新验证
+// SSG + ISR: 按需生成，24小时重新验证
+// Cloudflare Pages Workers 模式支持真正的 ISR
 export const dynamic = 'force-static'
 export const revalidate = 86400 // 24小时
 
@@ -51,8 +52,9 @@ const articles: Record<string, {
   },
 }
 
-// 生成静态路径
+// 生成静态路径 - 按需生成模式
 export async function generateStaticParams() {
+  // 这个页面数据量小，可以预构建
   return Object.keys(articles).map((slug) => ({
     slug,
   }))
