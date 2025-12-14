@@ -1,6 +1,6 @@
 # API 接口文档
 
-> 版本：v2.5.0  
+> 版本：v2.7.0  
 > 日期：2025-12-14  
 > 基础路径：`/api`  
 > 对应架构：若依 Boot 单体架构
@@ -165,11 +165,110 @@ PUT /site/{id}
 DELETE /site/{id}
 ```
 
-### 2.6 推广站点公开接口
+### 2.6 网站多语言配置
+
+#### 2.6.1 获取网站语言配置列表
+
+**请求**
+
+```
+GET /site/{siteId}/locales
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": [
+    {
+      "id": 1,
+      "siteId": 1,
+      "locale": "zh-CN",
+      "localeName": "简体中文",
+      "nativeName": "简体中文",
+      "isDefault": true,
+      "isEnabled": true,
+      "storagePathTemplate": "zh-CN/{category}/{slug}",
+      "urlTemplate": "/{category}/{slug}",
+      "urlPrefix": "",
+      "aiPromptSuffix": null,
+      "sortOrder": 0
+    },
+    {
+      "id": 2,
+      "siteId": 1,
+      "locale": "en-US",
+      "localeName": "English",
+      "nativeName": "English",
+      "isDefault": false,
+      "isEnabled": true,
+      "storagePathTemplate": "en-US/{category}/{slug}",
+      "urlTemplate": "/en/{category}/{slug}",
+      "urlPrefix": "/en",
+      "aiPromptSuffix": "Please write the article in English.",
+      "sortOrder": 1
+    }
+  ]
+}
+```
+
+#### 2.6.2 添加网站语言配置
+
+**请求**
+
+```
+POST /site/{siteId}/locales
+```
+
+**请求体**
+
+```json
+{
+  "locale": "ja-JP",
+  "localeName": "日本語",
+  "nativeName": "日本語",
+  "isDefault": false,
+  "storageConfigId": null,
+  "storagePathTemplate": "ja-JP/{category}/{slug}",
+  "urlTemplate": "/ja/{category}/{slug}",
+  "urlPrefix": "/ja",
+  "seoTitleTemplate": "{title} | ゲーム攻略",
+  "seoDescriptionTemplate": "{description}",
+  "aiPromptSuffix": "記事を日本語で書いてください。",
+  "translationPrompt": "以下の中国語の文章を日本語に翻訳してください。"
+}
+```
+
+#### 2.6.3 更新网站语言配置
+
+**请求**
+
+```
+PUT /site/{siteId}/locales/{localeId}
+```
+
+#### 2.6.4 删除网站语言配置
+
+**请求**
+
+```
+DELETE /site/{siteId}/locales/{localeId}
+```
+
+#### 2.6.5 设置默认语言
+
+**请求**
+
+```
+PUT /site/{siteId}/locales/{localeId}/default
+```
+
+### 2.7 推广站点公开接口
 
 这些接口供推广站点（前端展示站）调用，用于获取内容数据。
 
-#### 2.6.1 根据域名获取网站配置
+#### 2.7.1 根据域名获取网站配置
 
 **请求**
 
@@ -195,6 +294,25 @@ GET /public/site/config
     "seoTitle": "最新游戏下载",
     "seoKeywords": "游戏下载,破解游戏",
     "seoDescription": "提供最新游戏下载服务",
+    "defaultLocale": "zh-CN",
+    "supportedLocales": ["zh-CN", "en-US", "ja-JP"],
+    "i18nMode": "subdirectory",
+    "locales": [
+      {
+        "locale": "zh-CN",
+        "localeName": "简体中文",
+        "nativeName": "简体中文",
+        "urlPrefix": "",
+        "isDefault": true
+      },
+      {
+        "locale": "en-US",
+        "localeName": "English",
+        "nativeName": "English",
+        "urlPrefix": "/en",
+        "isDefault": false
+      }
+    ],
     "config": {
       "theme": "default",
       "analyticsId": "GA-XXXXX"
@@ -203,7 +321,7 @@ GET /public/site/config
 }
 ```
 
-#### 2.6.2 获取站点文章列表
+#### 2.7.2 获取站点文章列表
 
 **请求**
 
@@ -213,11 +331,12 @@ GET /public/site/{siteId}/articles
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|-----|------|------|
+| locale | String | 否 | 语言代码，默认使用网站默认语言 |
 | category | String | 否 | 分类标识 |
 | pageNum | Integer | 否 | 页码 |
 | pageSize | Integer | 否 | 每页数量 |
 
-#### 2.6.3 获取站点游戏盒子列表
+#### 2.7.3 获取站点游戏盒子列表
 
 **请求**
 
@@ -254,7 +373,7 @@ GET /public/site/{siteId}/gameboxes
 }
 ```
 
-#### 2.6.4 获取站点游戏列表
+#### 2.7.4 获取站点游戏列表
 
 **请求**
 
@@ -936,9 +1055,341 @@ POST /article-resource/migrate
 
 ---
 
-## 10. 存储迁移规则接口
+## 10. 存储配置接口
 
-### 9.1 规则列表
+### 10.1 存储配置列表
+
+**请求**
+
+```
+GET /storage-config/list
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| siteId | Long | 否 | 网站ID（不传返回全局配置） |
+| storageType | String | 否 | 存储类型：github/minio/r2/oss/cos/s3 |
+| storagePurpose | String | 否 | 存储用途：article/resource/mixed |
+| status | Integer | 否 | 状态：0-禁用 1-启用 |
+| pageNum | Integer | 否 | 页码，默认1 |
+| pageSize | Integer | 否 | 每页数量，默认20 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "total": 3,
+    "rows": [
+      {
+        "id": 1,
+        "siteId": null,
+        "name": "主存储-R2",
+        "code": "r2-main",
+        "storageType": "r2",
+        "storagePurpose": "mixed",
+        "isDefault": 1,
+        "priority": 10,
+        "cdnUrl": "https://cdn.example.com",
+        "capacityLimit": 10737418240,
+        "usedCapacity": 2147483648,
+        "capacityPercent": 20.0,
+        "fileCount": 1520,
+        "isCapacityFull": 0,
+        "healthStatus": "healthy",
+        "fallbackStorageId": 2,
+        "status": 1,
+        "createdAt": "2025-01-01 12:00:00"
+      },
+      {
+        "id": 2,
+        "siteId": null,
+        "name": "备用存储-OSS",
+        "code": "oss-backup",
+        "storageType": "oss",
+        "storagePurpose": "resource",
+        "isDefault": 0,
+        "priority": 20,
+        "cdnUrl": "https://oss-cdn.example.com",
+        "capacityLimit": null,
+        "usedCapacity": 0,
+        "capacityPercent": 0,
+        "fileCount": 0,
+        "isCapacityFull": 0,
+        "healthStatus": "healthy",
+        "fallbackStorageId": null,
+        "status": 1,
+        "createdAt": "2025-01-01 12:00:00"
+      }
+    ]
+  }
+}
+```
+
+### 10.2 存储配置详情
+
+**请求**
+
+```
+GET /storage-config/{id}
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "id": 1,
+    "siteId": null,
+    "name": "主存储-R2",
+    "code": "r2-main",
+    "storageType": "r2",
+    "storagePurpose": "mixed",
+    "isDefault": 1,
+    "priority": 10,
+    "r2AccountId": "xxxxx",
+    "r2AccessKey": "xxxxx",
+    "r2Bucket": "game-content",
+    "r2PublicUrl": "https://pub-xxxxx.r2.dev",
+    "cdnUrl": "https://cdn.example.com",
+    "customDomain": "cdn.example.com",
+    "basePath": "articles",
+    "maxFileSize": 10485760,
+    "allowedExtensions": "md,json,txt,jpg,png,gif,webp,mp4",
+    "capacityLimit": 10737418240,
+    "usedCapacity": 2147483648,
+    "fileCount": 1520,
+    "fileCountLimit": null,
+    "capacityWarningThreshold": 80.00,
+    "isCapacityFull": 0,
+    "capacityFullAt": null,
+    "fallbackStorageId": 2,
+    "autoSwitchOnFull": 1,
+    "lastHealthCheck": "2025-12-14 10:00:00",
+    "healthStatus": "healthy",
+    "healthMessage": "连接正常，读写测试通过",
+    "description": "主要存储，用于存放文章和资源文件",
+    "status": 1,
+    "createdBy": 1,
+    "createdAt": "2025-01-01 12:00:00",
+    "updatedAt": "2025-12-14 10:00:00"
+  }
+}
+```
+
+### 10.3 新增存储配置
+
+**请求**
+
+```
+POST /storage-config
+```
+
+```json
+{
+  "siteId": null,
+  "name": "备用存储-COS",
+  "code": "cos-backup",
+  "storageType": "cos",
+  "storagePurpose": "resource",
+  "priority": 30,
+  "cosSecretId": "AKIDxxxxx",
+  "cosSecretKey": "xxxxx",
+  "cosBucket": "game-resource-1250000000",
+  "cosRegion": "ap-guangzhou",
+  "cdnUrl": "https://cos-cdn.example.com",
+  "basePath": "resources",
+  "maxFileSize": 52428800,
+  "allowedExtensions": "jpg,png,gif,webp,mp4,webm",
+  "capacityLimit": 53687091200,
+  "capacityWarningThreshold": 85.00,
+  "fallbackStorageId": null,
+  "autoSwitchOnFull": 1,
+  "description": "腾讯云COS备用存储"
+}
+```
+
+### 10.4 修改存储配置
+
+**请求**
+
+```
+PUT /storage-config/{id}
+```
+
+### 10.5 删除存储配置
+
+**请求**
+
+```
+DELETE /storage-config/{id}
+```
+
+### 10.6 设置默认存储
+
+**请求**
+
+```
+PUT /storage-config/{id}/default
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| siteId | Long | 否 | 网站ID（设置该网站的默认存储） |
+| storagePurpose | String | 否 | 存储用途（按用途设置默认） |
+
+### 10.7 测试存储连接
+
+**请求**
+
+```
+POST /storage-config/{id}/test
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "connected": true,
+    "readTest": true,
+    "writeTest": true,
+    "deleteTest": true,
+    "latencyMs": 120,
+    "message": "连接正常，所有测试通过"
+  }
+}
+```
+
+### 10.8 刷新存储容量
+
+手动刷新存储的实际容量信息。
+
+**请求**
+
+```
+POST /storage-config/{id}/refresh-capacity
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "previousCapacity": 2147483648,
+    "currentCapacity": 2200000000,
+    "previousFileCount": 1520,
+    "currentFileCount": 1535,
+    "capacityPercent": 20.48,
+    "refreshedAt": "2025-12-14 10:30:00"
+  }
+}
+```
+
+### 10.9 获取可用存储
+
+根据用途和网站获取可用的存储配置（自动排除已满和不健康的存储）。
+
+**请求**
+
+```
+GET /storage-config/available
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| siteId | Long | 否 | 网站ID |
+| storagePurpose | String | 否 | 存储用途：article/resource/mixed |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": [
+    {
+      "id": 1,
+      "name": "主存储-R2",
+      "code": "r2-main",
+      "storageType": "r2",
+      "priority": 10,
+      "capacityPercent": 20.0,
+      "isDefault": 1
+    },
+    {
+      "id": 2,
+      "name": "备用存储-OSS",
+      "code": "oss-backup",
+      "storageType": "oss",
+      "priority": 20,
+      "capacityPercent": 0,
+      "isDefault": 0
+    }
+  ]
+}
+```
+
+### 10.10 容量使用记录
+
+**请求**
+
+```
+GET /storage-config/{id}/capacity-logs
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| logType | String | 否 | 日志类型：upload/delete/sync/manual |
+| startTime | String | 否 | 开始时间 |
+| endTime | String | 否 | 结束时间 |
+| pageNum | Integer | 否 | 页码，默认1 |
+| pageSize | Integer | 否 | 每页数量，默认20 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "data": {
+    "total": 100,
+    "rows": [
+      {
+        "id": 1,
+        "storageConfigId": 1,
+        "logType": "upload",
+        "fileCountChange": 1,
+        "capacityChange": 1024000,
+        "fileCountAfter": 1521,
+        "capacityAfter": 2148507648,
+        "capacityPercent": 20.01,
+        "articleId": 123,
+        "resourceId": 456,
+        "filePath": "articles/2025/12/game-guide.md",
+        "fileSize": 1024000,
+        "triggerSource": "api",
+        "triggerUserId": 1,
+        "createdAt": "2025-12-14 11:00:00"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 11. 存储迁移规则接口
+
+### 11.1 规则列表
 
 **请求**
 
@@ -977,7 +1428,7 @@ GET /storage-migration-rule/list
 }
 ```
 
-### 9.2 创建规则
+### 11.2 创建规则
 
 **请求**
 
@@ -999,7 +1450,7 @@ POST /storage-migration-rule
 }
 ```
 
-### 9.3 执行规则
+### 11.3 执行规则
 
 **请求**
 
@@ -1035,7 +1486,7 @@ POST /storage-migration-rule/{id}/execute
 }
 ```
 
-### 9.4 迁移日志
+### 11.4 迁移日志
 
 **请求**
 
@@ -1076,11 +1527,11 @@ GET /storage-migration-log/list
 
 ---
 
-## 11. 前端专用接口
+## 12. 前端专用接口
 
 > 以下接口供 Next.js 前端调用，无需认证
 
-### 10.1 获取文章内容
+### 12.1 获取文章内容
 
 **请求**
 
@@ -1123,7 +1574,7 @@ GET /public/gameboxes
 
 ---
 
-## 12. 接口流程图
+## 13. 接口流程图
 
 ### 11.1 搜索流程
 
@@ -1181,7 +1632,7 @@ sequenceDiagram
 
 ---
 
-## 13. AI 生成任务接口
+## 14. AI 生成任务接口
 
 ### 12.1 批量任务列表
 
@@ -1553,7 +2004,7 @@ X-Webhook-Secret: <签名>
 
 ---
 
-## 14. GitHub 集成接口
+## 15. GitHub 集成接口
 
 ### 13.1 获取 OAuth 授权 URL
 
@@ -1691,7 +2142,7 @@ GET /github/workflow/{runId}/status
 
 ---
 
-## 15. 接口调用流程
+## 16. 接口调用流程
 
 ### 14.1 AI 文章生成流程
 
@@ -1736,10 +2187,12 @@ sequenceDiagram
 
 ---
 
-## 16. 版本历史
+## 17. 版本历史
 
 | 版本 | 日期 | 修改内容 |
 |------|------|---------|
 | v1.0.0 | 2025-12-13 | 初始版本，基础CRUD接口 |
 | v2.2.0 | 2025-12-14 | 新增提示词模板接口、文章资源接口、存储迁移规则接口 |
 | v2.3.0 | 2025-12-14 | 新增AI生成任务接口、GitHub集成接口、Webhook回调接口 |
+| v2.6.0 | 2025-12-14 | 新增网站多语言配置API，更新推广站点公开接口支持locale参数 |
+| v2.7.0 | 2025-12-14 | 新增存储配置管理接口（包括容量管理、健康检查、存储轮换、容量日志查询） |
