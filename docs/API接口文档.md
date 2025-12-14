@@ -1,7 +1,7 @@
 # API 接口文档
 
-> 版本：v1.0.0  
-> 日期：2025-12-13  
+> 版本：v2.2.0  
+> 日期：2025-12-14  
 > 基础路径：`/api/v1`
 
 ---
@@ -506,11 +506,350 @@ POST /analytics/pageview
 
 ---
 
-## 7. 前端专用接口
+## 7. 提示词模板接口
+
+### 7.1 模板列表
+
+**请求**
+
+```
+GET /prompt-template/list
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| siteId | Long | 否 | 站点ID |
+| templateType | String | 否 | 模板类型：game_intro/game_guide/drama_intro等 |
+| status | Integer | 否 | 状态 |
+| pageNum | Integer | 否 | 页码 |
+| pageSize | Integer | 否 | 每页数量 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "total": 50,
+    "rows": [
+      {
+        "id": 1,
+        "templateName": "游戏介绍通用模板",
+        "templateType": "game_intro",
+        "description": "用于生成游戏介绍文章",
+        "variables": ["game_name", "game_type", "features"],
+        "status": 1,
+        "usageCount": 1500
+      }
+    ]
+  }
+}
+```
+
+### 7.2 创建模板
+
+**请求**
+
+```
+POST /prompt-template
+```
+
+```json
+{
+  "siteId": 1,
+  "templateName": "游戏攻略模板",
+  "templateType": "game_guide",
+  "description": "用于生成游戏攻略文章",
+  "systemPrompt": "你是一名专业的游戏攻略作者...",
+  "userPromptTemplate": "请为{{game_name}}生成一篇攻略文章，包含以下要点：{{key_points}}",
+  "variables": ["game_name", "key_points", "target_audience"],
+  "defaultValues": {
+    "target_audience": "新手玩家"
+  }
+}
+```
+
+### 7.3 预览模板
+
+**请求**
+
+```
+POST /prompt-template/preview
+```
+
+```json
+{
+  "templateId": 1,
+  "variables": {
+    "game_name": "剑来",
+    "game_type": "仙侠",
+    "features": ["无限元宝", "满V特权"]
+  }
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "systemPrompt": "你是一名专业的游戏攻略作者...",
+    "userPrompt": "请为剑来生成一篇游戏介绍..."
+  }
+}
+```
+
+---
+
+## 8. 文章资源接口
+
+### 8.1 资源列表
+
+**请求**
+
+```
+GET /article-resource/list
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| articleId | Long | 否 | 文章ID |
+| resourceType | String | 否 | 资源类型：image/video/audio/file |
+| migrationStatus | String | 否 | 迁移状态 |
+| pageNum | Integer | 否 | 页码 |
+| pageSize | Integer | 否 | 每页数量 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "total": 500,
+    "rows": [
+      {
+        "id": 1,
+        "articleId": 100,
+        "resourceType": "image",
+        "originalUrl": "https://old-cdn.com/img/001.jpg",
+        "currentUrl": "https://new-cdn.com/img/001.jpg",
+        "storageConfigId": 2,
+        "fileSize": 102400,
+        "migrationStatus": "completed"
+      }
+    ]
+  }
+}
+```
+
+### 8.2 上传资源
+
+**请求**
+
+```
+POST /article-resource/upload
+Content-Type: multipart/form-data
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| file | File | 是 | 上传文件 |
+| articleId | Long | 是 | 文章ID |
+| storageConfigId | Long | 否 | 存储配置ID |
+| resourceType | String | 否 | 资源类型 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "id": 1,
+    "url": "https://cdn.example.com/articles/100/img001.jpg",
+    "fileName": "img001.jpg",
+    "fileSize": 102400,
+    "mimeType": "image/jpeg"
+  }
+}
+```
+
+### 8.3 批量迁移资源
+
+**请求**
+
+```
+POST /article-resource/migrate
+```
+
+```json
+{
+  "ruleId": 1,
+  "articleIds": [100, 101, 102],
+  "dryRun": false
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "taskId": "migrate-20251214-001",
+    "totalCount": 150,
+    "status": "processing"
+  }
+}
+```
+
+---
+
+## 9. 存储迁移规则接口
+
+### 9.1 规则列表
+
+**请求**
+
+```
+GET /storage-migration-rule/list
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| ruleType | String | 否 | 规则类型：url_replace/storage_move等 |
+| status | Integer | 否 | 状态 |
+| pageNum | Integer | 否 | 页码 |
+| pageSize | Integer | 否 | 每页数量 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "total": 10,
+    "rows": [
+      {
+        "id": 1,
+        "ruleName": "旧CDN迁移到R2",
+        "ruleType": "storage_move",
+        "sourcePattern": "https://old-cdn.com/*",
+        "targetTemplate": "https://r2.example.com/{{path}}",
+        "sourceStorageId": 1,
+        "targetStorageId": 2,
+        "status": 1,
+        "executedCount": 5000
+      }
+    ]
+  }
+}
+```
+
+### 9.2 创建规则
+
+**请求**
+
+```
+POST /storage-migration-rule
+```
+
+```json
+{
+  "ruleName": "图床迁移到OSS",
+  "ruleType": "storage_move",
+  "description": "将所有图床资源迁移到阿里云OSS",
+  "sourcePattern": "https://imgbed.com/**",
+  "targetTemplate": "https://oss.example.com/images/{{filename}}",
+  "sourceStorageId": 1,
+  "targetStorageId": 3,
+  "scopeType": "all",
+  "priority": 10
+}
+```
+
+### 9.3 执行规则
+
+**请求**
+
+```
+POST /storage-migration-rule/{id}/execute
+```
+
+```json
+{
+  "dryRun": true,
+  "batchSize": 100,
+  "articleIds": []
+}
+```
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "taskId": "rule-exec-20251214-001",
+    "matchedCount": 1500,
+    "estimatedTime": "15分钟",
+    "dryRunResults": [
+      {
+        "resourceId": 1,
+        "originalUrl": "https://imgbed.com/a.jpg",
+        "targetUrl": "https://oss.example.com/images/a.jpg"
+      }
+    ]
+  }
+}
+```
+
+### 9.4 迁移日志
+
+**请求**
+
+```
+GET /storage-migration-log/list
+```
+
+| 参数 | 类型 | 必填 | 说明 |
+|------|-----|------|------|
+| ruleId | Long | 否 | 规则ID |
+| resourceId | Long | 否 | 资源ID |
+| migrationStatus | String | 否 | 迁移状态 |
+| startTime | DateTime | 否 | 开始时间 |
+| endTime | DateTime | 否 | 结束时间 |
+
+**响应**
+
+```json
+{
+  "code": 200,
+  "data": {
+    "total": 5000,
+    "rows": [
+      {
+        "id": 1,
+        "ruleId": 1,
+        "resourceId": 100,
+        "originalUrl": "https://old.com/a.jpg",
+        "targetUrl": "https://new.com/a.jpg",
+        "migrationStatus": "completed",
+        "executedAt": "2025-12-14 10:00:00",
+        "executedBy": "system"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 10. 前端专用接口
 
 > 以下接口供 Next.js 前端调用，无需认证
 
-### 7.1 获取文章内容
+### 10.1 获取文章内容
 
 **请求**
 
@@ -535,7 +874,7 @@ GET /public/article/{slug}
 }
 ```
 
-### 7.2 获取分类列表
+### 10.2 获取分类列表
 
 **请求**
 
@@ -543,7 +882,7 @@ GET /public/article/{slug}
 GET /public/categories
 ```
 
-### 7.3 获取游戏盒子
+### 10.3 获取游戏盒子
 
 **请求**
 
@@ -553,9 +892,9 @@ GET /public/gameboxes
 
 ---
 
-## 8. 接口流程图
+## 11. 接口流程图
 
-### 8.1 搜索流程
+### 11.1 搜索流程
 
 ```mermaid
 sequenceDiagram
@@ -583,7 +922,7 @@ sequenceDiagram
     Gateway->>Client: 返回响应
 ```
 
-### 8.2 文档同步流程
+### 11.2 文档同步流程
 
 ```mermaid
 sequenceDiagram
@@ -611,3 +950,12 @@ sequenceDiagram
     
     Worker->>DB: 更新任务状态
 ```
+
+---
+
+## 12. 版本历史
+
+| 版本 | 日期 | 修改内容 |
+|------|------|---------|
+| v1.0.0 | 2025-12-13 | 初始版本，基础CRUD接口 |
+| v2.2.0 | 2025-12-14 | 新增提示词模板接口、文章资源接口、存储迁移规则接口 |
