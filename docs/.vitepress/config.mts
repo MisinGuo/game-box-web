@@ -71,11 +71,10 @@ export default withMermaid(
         target: 'esnext'
       }
     }
-  }),
-  {
-    // Mermaid 配置
-    mermaidConfig: {
-      theme: 'default'
-    }
+  // Mermaid 配置合并到主配置
+  , 
+  mermaid: {
+    theme: 'default'
   }
+  })
 )
