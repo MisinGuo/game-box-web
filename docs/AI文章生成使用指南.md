@@ -95,34 +95,34 @@ AI 文章生成系统通过以下流程工作：
 2. 点击 **新建模板**
 3. 填写模板信息：
 
-```markdown
+```text
 ---
 name: 游戏介绍模板
 type: game-intro
 ---
 
-# {{gameName}}破解版下载
+# {gameName}破解版下载
 
-{{IMAGE_SEARCH:{{gameName}}游戏截图}}
+{IMAGE_SEARCH:{gameName}游戏截图}
 
-## 🎮 游戏简介
+## 游戏简介
 
-请为{{gameName}}写一段200字的游戏简介，包含：
+请为{gameName}写一段200字的游戏简介，包含：
 - 游戏类型
 - 核心玩法
 - 游戏特色
 
-## 📸 精彩截图
+## 精彩截图
 
-{{IMAGE_SEARCH:{{gameName}}:3}}
+{IMAGE_SEARCH:{gameName}:3}
 
-## ⭐ 破解版特性
+## 破解版特性
 
 请列出5个破解版特性，如无限元宝、满VIP等
 
-## 📥 下载说明
+## 下载说明
 
-{{IMAGE_POOL:download-guide}}
+{IMAGE_POOL:download-guide}
 
 点击下方按钮立即下载！
 ```
@@ -264,32 +264,32 @@ type: game-intro
 
 ### 图片搜索（自动从搜索引擎获取）
 
-```markdown
-<!-- 搜索并插入 1 张图片 -->
-{{IMAGE_SEARCH:剑来游戏截图}}
+```text
+搜索并插入 1 张图片
+{IMAGE_SEARCH:剑来游戏截图}
 
-<!-- 搜索并随机选取 3 张图片 -->
-{{IMAGE_SEARCH:仙侠游戏:3}}
+搜索并随机选取 3 张图片
+{IMAGE_SEARCH:仙侠游戏:3}
 
-<!-- 使用变量作为搜索关键词 -->
-{{IMAGE_SEARCH:{{gameName}}游戏截图}}
+使用变量作为搜索关键词
+{IMAGE_SEARCH:{gameName}游戏截图}
 ```
 
 ### 图片池（从自定义图片库选取）
 
-```markdown
-<!-- 从 banner 分类随机选 1 张 -->
-{{IMAGE_POOL:banner}}
+```text
+从 banner 分类随机选 1 张
+{IMAGE_POOL:banner}
 
-<!-- 从 screenshot 分类随机选 3 张 -->
-{{IMAGE_POOL:screenshot:3}}
+从 screenshot 分类随机选 3 张
+{IMAGE_POOL:screenshot:3}
 ```
 
 ### 固定图片
 
-```markdown
-<!-- 使用固定 URL -->
-{{IMAGE:https://cdn.example.com/logo.png}}
+```text
+使用固定 URL
+{IMAGE:https://cdn.example.com/logo.png}
 ```
 
 ---

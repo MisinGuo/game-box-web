@@ -301,9 +301,9 @@ sequenceDiagram
   - 模板类型（游戏介绍/攻略/评测/短剧介绍等）
   - 变量定义与默认值
   - **图片占位符配置**
-    - 搜索引擎图片占位符 `{{IMAGE_SEARCH:关键词}}`
-    - 自定义图片池占位符 `{{IMAGE_POOL:分类}}`
-    - 固定图片占位符 `{{IMAGE:URL}}`
+    - 搜索引擎图片占位符 `{IMAGE_SEARCH:关键词}`
+    - 自定义图片池占位符 `{IMAGE_POOL:分类}`
+    - 固定图片占位符 `{IMAGE:URL}`
   - 模板预览与测试
 - [ ] **图片资源管理** `P0`
   - 图片搜索引擎配置（Bing/Google/Unsplash/Pixabay）
@@ -643,11 +643,11 @@ game-box-ai-generator/
 
 | 占位符格式 | 说明 | 示例 |
 |-----------|------|------|
-| `{{IMAGE_SEARCH:关键词}}` | 通过搜索引擎搜索图片 | `{{IMAGE_SEARCH:剑来游戏截图}}` |
-| `{{IMAGE_SEARCH:关键词:数量}}` | 搜索并随机选取 | `{{IMAGE_SEARCH:仙侠游戏:3}}` |
-| `{{IMAGE_POOL:分类}}` | 从图片池随机选取 | `{{IMAGE_POOL:game-screenshot}}` |
-| `{{IMAGE_POOL:分类:数量}}` | 从图片池选取多张 | `{{IMAGE_POOL:character:2}}` |
-| `{{IMAGE:URL}}` | 固定图片 | `{{IMAGE:https://example.com/img.jpg}}` |
+| `{IMAGE_SEARCH:关键词}` | 通过搜索引擎搜索图片 | `{IMAGE_SEARCH:剑来游戏截图}` |
+| `{IMAGE_SEARCH:关键词:数量}` | 搜索并随机选取 | `{IMAGE_SEARCH:仙侠游戏:3}` |
+| `{IMAGE_POOL:分类}` | 从图片池随机选取 | `{IMAGE_POOL:game-screenshot}` |
+| `{IMAGE_POOL:分类:数量}` | 从图片池选取多张 | `{IMAGE_POOL:character:2}` |
+| `{IMAGE:URL}` | 固定图片 | `{IMAGE:https://example.com/img.jpg}` |
 
 **图片处理流程**：
 
@@ -712,39 +712,39 @@ flowchart TD
 
 #### 3.4.6 模板示例（含图片） `P0`
 
-```markdown
+```text
 ---
-title: "{{gameName}}破解版下载"
-description: "{{gameName}}破解版，无限元宝，满VIP特权"
-keywords: ["{{gameName}}", "破解版", "无限元宝"]
-category: "{{category}}"
-date: "{{date}}"
-cover: "{{IMAGE_POOL:banner}}"
+title: "{gameName}破解版下载"
+description: "{gameName}破解版，无限元宝，满VIP特权"
+keywords: ["{gameName}", "破解版", "无限元宝"]
+category: "{category}"
+date: "{date}"
+cover: "{IMAGE_POOL:banner}"
 ---
 
-# {{gameName}}破解版下载
+# {gameName}破解版下载
 
-{{IMAGE_SEARCH:{{gameName}}游戏截图}}
+{IMAGE_SEARCH:{gameName}游戏截图}
 
 ## 游戏简介
 
-{{AI_GENERATE:请为{{gameName}}写一段200字的游戏简介}}
+{AI_GENERATE:请为{gameName}写一段200字的游戏简介}
 
 ## 游戏截图
 
-{{IMAGE_SEARCH:{{gameName}}:3}}
+{IMAGE_SEARCH:{gameName}:3}
 
 ## 游戏特色
 
-{{AI_GENERATE:请列出{{gameName}}的5个主要特色}}
+{AI_GENERATE:请列出{gameName}的5个主要特色}
 
 ## 下载说明
 
-{{IMAGE_POOL:download-guide}}
+{IMAGE_POOL:download-guide}
 
 点击下方按钮下载游戏：
 
-[立即下载]({{downloadUrl}})
+[立即下载]({downloadUrl})
 ```
 
 #### 3.4.7 后端触发 API `P0`

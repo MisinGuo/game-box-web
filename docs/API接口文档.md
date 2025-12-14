@@ -911,7 +911,7 @@ POST /prompt-template
   "templateType": "game_guide",
   "description": "用于生成游戏攻略文章",
   "systemPrompt": "你是一名专业的游戏攻略作者...",
-  "userPromptTemplate": "请为{{game_name}}生成一篇攻略文章，包含以下要点：{{key_points}}",
+  "userPromptTemplate": "请为{game_name}生成一篇攻略文章，包含以下要点：{key_points}",
   "variables": ["game_name", "key_points", "target_audience"],
   "defaultValues": {
     "target_audience": "新手玩家"
@@ -1417,7 +1417,7 @@ GET /storage-migration-rule/list
         "ruleName": "旧CDN迁移到R2",
         "ruleType": "storage_move",
         "sourcePattern": "https://old-cdn.com/*",
-        "targetTemplate": "https://r2.example.com/{{path}}",
+        "targetTemplate": "https://r2.example.com/{path}",
         "sourceStorageId": 1,
         "targetStorageId": 2,
         "status": 1,
@@ -1442,7 +1442,7 @@ POST /storage-migration-rule
   "ruleType": "storage_move",
   "description": "将所有图床资源迁移到阿里云OSS",
   "sourcePattern": "https://imgbed.com/**",
-  "targetTemplate": "https://oss.example.com/images/{{filename}}",
+  "targetTemplate": "https://oss.example.com/images/{filename}",
   "sourceStorageId": 1,
   "targetStorageId": 3,
   "scopeType": "all",
