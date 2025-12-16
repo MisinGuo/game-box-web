@@ -669,12 +669,15 @@ onMounted(async () => {
 .modal-mermaid-container {
   padding: 1rem;
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   cursor: grab;
   position: relative;
   background: #fafafa;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-mermaid-container:active {
@@ -682,9 +685,10 @@ onMounted(async () => {
 }
 
 .modal-mermaid-container :deep(svg) {
-  max-width: none !important;
-  width: 100% !important;
+  width: auto !important;
   height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   display: block !important;
   margin: 0 auto;
   visibility: visible !important;
