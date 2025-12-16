@@ -177,9 +177,20 @@ const renderMermaid = async (container: HTMLElement, id: string, isModal = false
     if (svgElement) {
       svgElement.style.display = 'block'
       svgElement.style.visibility = 'visible'
+      
+      // 保存原始尺寸作为 viewBox
+      const width = svgElement.getAttribute('width')
+      const height = svgElement.getAttribute('height')
+      if (width && height && !svgElement.getAttribute('viewBox')) {
+        svgElement.setAttribute('viewBox', `0 0 ${width} ${height}`)
+      }
+      
+      // 移除固定宽高，让 SVG 自适应
+      svgElement.removeAttribute('width')
+      svgElement.removeAttribute('height')
       svgElement.style.width = '100%'
       svgElement.style.height = 'auto'
-      svgElement.style.maxWidth = 'none'
+      svgElement.style.maxWidth = '100%'
       
       // 确保文字完整显示
       const textElements = svgElement.querySelectorAll('text')
@@ -672,9 +683,8 @@ onMounted(async () => {
 
 .modal-mermaid-container :deep(svg) {
   max-width: none !important;
-  width: auto !important;
+  width: 100% !important;
   height: auto !important;
-  min-width: 100% !important;
   display: block !important;
   margin: 0 auto;
   visibility: visible !important;
